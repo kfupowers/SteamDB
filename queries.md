@@ -2,6 +2,6 @@
   
 π<sub>title</sub> σ<sub>(price \< 1000)</sub>Games  
 
-2\) Найти названия компаний разработчиков, чей рейтинг > 90%
+2\) Найти названия компаний разработчиков, у кого есть игры с рейтингом > 90%
 
 π<sub>developers.name</sub> σ<sub>(rating > 90%)</sub> (developers ⋈<sub>developer_id</sub> games))
