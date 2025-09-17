@@ -4,4 +4,4 @@
 
 2\) Найти названия компаний разработчиков, у кого есть игры с рейтингом > 90%
 
-π<sub>developers.name</sub> σ<sub>(rating > 90%)</sub> (developers ⋈<sub>developer_id</sub> games))
+π<sub>developers.name</sub> σ<sub>(rating > 90%)</sub> (developers ⋈<sub>developer_id</sub> games⋈<sub>game_id</sub> reviews))
