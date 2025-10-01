@@ -119,26 +119,27 @@ ALTER TABLE steam.workshop ALTER COLUMN work_name set NOT NULL;
 ALTER TABLE steam.workshop ALTER COLUMN upload_date set NOT NULL;
 
 
-CREATE TABLE IF NOT EXISTS steam.account_achievement
-(
-    account_id integer NOT NULL,
-    achievement_id integer NOT NULL,
-    CONSTRAINT achievement_account_id_pk PRIMARY KEY (account_id, achievement_id),
-    CONSTRAINT account_id_fk FOREIGN KEY (account_id)
-        REFERENCES steam.accounts (account_id),
-    CONSTRAINT achievement_id_fk FOREIGN KEY (achievement_id)
-        REFERENCES steam.achievements (achievement_id)
-);
-
 CREATE TABLE IF NOT EXISTS steam.account_game
 (
+	ownership_id serial,
     account_id integer NOT NULL,
     game_id integer NOT NULL,
-    CONSTRAINT game_account_id_pk PRIMARY KEY (account_id, game_id),
+    CONSTRAINT game_account_id_pk PRIMARY KEY (ownership_id),
     CONSTRAINT account_id_fk FOREIGN KEY (account_id)
         REFERENCES steam.accounts (account_id),
     CONSTRAINT game_id_fk FOREIGN KEY (game_id)
         REFERENCES steam.games (game_id)
+);
+
+CREATE TABLE IF NOT EXISTS steam.ownership_achievement
+(
+    ownership_id integer NOT NULL,
+    achievement_id integer NOT NULL,
+    CONSTRAINT achievement_ownership_id_pk PRIMARY KEY (ownership_id, achievement_id),
+    CONSTRAINT ownership_id_fk FOREIGN KEY (ownership_id)
+        REFERENCES steam.account_game (ownership_id),
+    CONSTRAINT achievement_id_fk FOREIGN KEY (achievement_id)
+        REFERENCES steam.achievements (achievement_id)
 );
 
 CREATE TABLE IF NOT EXISTS steam.game_gamemode
@@ -163,12 +164,27 @@ CREATE TABLE IF NOT EXISTS steam.game_genre
         REFERENCES steam.genres (genre_id)
 );
 
+CREATE TABLE IF NOT EXISTS steam.account_work
+(
+    work_id integer NOT NULL,
+    ownership_id integer NOT NULL,
+    CONSTRAINT work_ownership_id_pk PRIMARY KEY (work_id, ownership_id),
+    CONSTRAINT work_id_fk FOREIGN KEY (work_id)
+        REFERENCES steam.workshop (work_id),
+    CONSTRAINT ownership_id_fk FOREIGN KEY (ownership_id)
+        REFERENCES steam.account_game (ownership_id)
+);
+
 INSERT INTO steam.accounts (username, email, password, wallet_balance) VALUES
 ('Dimov', 'dimov@gmail.com', 'ndazqdCzDGyn', 0),
 ('Hoot', 'hoot@gmail.com', 'GmFwTvgzmdeT', 170),
 ('lystic', 'lystic@gmail.com', 'YAXzKhpUcsTT', 230),
 ('obikym', 'obikym@gmail.com', 'TdbPSZbBZJhW', 2000),
 ('sharyk', 'sharyk@gmail.com', 'NP6qZ2wWnnCE', 30000);
+
+UPDATE steam.accounts
+SET password = 'qwerty'
+WHERE email = 'dimov@gmail.com';
 
 INSERT INTO steam.friends (account_id_1, account_id_2) VALUES
 (1, 2),
@@ -288,26 +304,31 @@ INSERT INTO steam.achievements(game_id, name, description) VALUES
 (5, 'Medium Rare', 'Spend as little time as possible in The Hospital'),
 (5, 'Rare', 'Spend as little time as possible in The Forest');
 
-INSERT INTO steam.account_achievement(account_id, achievement_id) VALUES
-(1,1),
+INSERT INTO steam.ownership_achievement(ownership_id, achievement_id) VALUES
+(2,1),
+(2,2),
+(2,3),
+(2,4),
+(4,5),
+(4,6),
+(4,7),
+(4,8),
+(6,9),
+(6,10),
+(6,11),
+(6,12),
+(8,13),
+(8,14),
+(8,15),
+(8,16),
+(10,1),
+(10,2),
+(11,6),
+(11,7);
+
+INSERT INTO steam.account_work(work_id, ownership_id) VALUES
 (1,2),
-(1,3),
-(1,4),
-(2,5),
-(2,6),
-(2,7),
-(2,8),
-(3,9),
-(3,10),
-(3,11),
-(3,12),
-(4,13),
-(4,14),
-(4,15),
-(4,16),
-(5,1),
-(5,2),
-(5,6),
-(5,7);
+(1,10),
+(2,4);
 
 
