@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS steam.games
     developer_id integer NOT NULL,
     title VARCHAR(200) NOT NULL,
     description VARCHAR(1000) NOT NULL,
-    release_date date NOT NULL,
+    release_date date,
     price integer NOT NULL,
     CONSTRAINT game_id_pk PRIMARY KEY (game_id),
     CONSTRAINT developer_id_fk FOREIGN KEY (developer_id)
@@ -332,5 +332,6 @@ INSERT INTO steam.account_work(work_id, ownership_id) VALUES
 (1,2),
 (1,10),
 (2,4);
+
 
 
