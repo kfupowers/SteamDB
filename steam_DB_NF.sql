@@ -63,7 +63,8 @@ CREATE TABLE IF NOT EXISTS steam.achievements
     description VARCHAR(1000) NOT NULL ,
     CONSTRAINT achievement_id_pk PRIMARY KEY (achievement_id),
     CONSTRAINT game_id_fk FOREIGN KEY (game_id)
-        REFERENCES steam.games (game_id)
+        REFERENCES steam.games (game_id),
+    CONSTRAINT games_id_name_uk UNIQUE (game_id, name)
 );
 
 CREATE TABLE IF NOT EXISTS steam.genres
@@ -286,7 +287,8 @@ INSERT INTO steam.reviews(game_id, account_id, rating, comment, review_date) VAL
 (2, 1, TRUE, 'Наилучшей шутер.', '2025-06-27'),
 (3, 2, TRUE, 'Скажу не кривя душой, что на данный момент это лучшая инди-игра/спинофф во вселенной Serious Sam, которая по некоторым параметрам может дать серьёзную фору даже большим официальным играм от Croteam.', '2017-06-20'),
 (4, 3, TRUE, 'Очень спокойная и расслабляющая игра… до тех пор пока ты не перейдешь дальше главного меню', '2025-09-03'),
-(5, 4, TRUE, 'Понимание таймингов и некое умение нажимать на кнопочки в процессе игры были лишь порогом вхождения для 9 главы. Игра обязательна на 100% достижений', '2025-09-07');
+(5, 4, TRUE, 'Понимание таймингов и некое умение нажимать на кнопочки в процессе игры были лишь порогом вхождения для 9 главы. Игра обязательна на 100% достижений', '2025-09-07'),
+(4, 5, FALSE, 'Даже не смотря на то, что игра большей частью мне нравится, хочется всё-таки задать дискурс о слишком уж одуревшей сложности, при том, что играл я, всего лишь на normal(e).', '2025-04-07');
 
 INSERT INTO steam.achievements(game_id, name, description) VALUES
 (2, 'Утешительный приз', 'Умрите от удара в спину 50 раз'),
@@ -332,6 +334,4 @@ INSERT INTO steam.account_work(work_id, ownership_id) VALUES
 (1,2),
 (1,10),
 (2,4);
-
-
 
