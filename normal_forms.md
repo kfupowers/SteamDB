@@ -1,1 +1,1 @@
-Добавил несколько NOT NULL в поля description и comment. Также добавил UNIQUE в таблице workshop на поле work_name, потому что до этого могли быть две одинаковые строчки.
+Добавил несколько NOT NULL в поля description и comment в таблицач game, gamemode, review. Также добавил UNIQUE в таблице workshop на поле work_name, потому что до этого могли быть две одинаковые строчки. Добавил UNIQUE в таблице achievements на поля (game_id, name), потому что могла быть игра, у которой две абсолютно одинаковые ачивки.
