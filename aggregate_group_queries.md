@@ -1,4 +1,4 @@
-<img width="817" height="460" alt="image" src="https://github.com/user-attachments/assets/e4870395-e971-4642-a9cd-e7b905d3c897" />1 AVG
+1 AVG
 
 1.1 Хотим получить среднню цену
 
