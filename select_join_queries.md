@@ -9,7 +9,7 @@ SELECT * FROM steam.games
 
 1.2 Хотим получить таблицу accounts
 ```sql
-SELECT * FROM steam.games
+SELECT * FROM steam.accounts
 ```
 
 <img width="1218" height="175" alt="image" src="https://github.com/user-attachments/assets/68a9fdb1-8cd4-41e8-91bb-48a32196a1a3" />
