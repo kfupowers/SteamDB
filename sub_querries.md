@@ -1,4 +1,4 @@
-<img width="212" height="115" alt="image" src="https://github.com/user-attachments/assets/fb48db3c-0efd-4556-8988-72248b76b4a8" />1 Select
+1 Select
 
 1.1 Хотим узнать почту первого пользователя
 ```sql
