@@ -1,4 +1,4 @@
-1 Select
+<img width="212" height="115" alt="image" src="https://github.com/user-attachments/assets/fb48db3c-0efd-4556-8988-72248b76b4a8" />1 Select
 
 1.1 Хотим узнать почту первого пользователя
 ```sql
@@ -178,48 +178,133 @@ HAVING COUNT(*) > 3)
 <img width="597" height="165" alt="image" src="https://github.com/user-attachments/assets/080251f5-c1dd-4582-9646-5932af14d4db" />
 
 
-6.3 Хотим узнать название первой игры
+6.3 Хотим узнать пользователей, которые написали хотя бы один положительный отзыв
 ```sql
-SELECT (SELECT title FROM steam.games LIMIT 1) AS НАЗВАНИЕ;
+SELECT username FROM steam.accounts
+WHERE accounts.account_id IN (SELECT DISTINCT account_id FROM steam.reviews
+WHERE rating)
 ```
-<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/103131fc-4a23-4c32-aa82-5f6d737d2b0a" />
+<img width="214" height="150" alt="image" src="https://github.com/user-attachments/assets/87508064-573d-4899-bca0-96b78c118431" />
+
 
 7 ANY
 
-1.2 Хотим узнать название первой игры
+7.1 Хотим узнать пользователей, у которых есть работы в мастерской
 ```sql
-SELECT (SELECT title FROM steam.games LIMIT 1) AS НАЗВАНИЕ;
+SELECT username FROM steam.accounts
+WHERE accounts.account_id = ANY (SELECT DISTINCT account_id FROM steam.workshop)
 ```
-<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/103131fc-4a23-4c32-aa82-5f6d737d2b0a" />
+<img width="212" height="86" alt="image" src="https://github.com/user-attachments/assets/e099dc89-3131-45c0-8f40-003f5e199048" />
 
-1.2 Хотим узнать название первой игры
+7.2 Хотим узнать пользователей с играми, в которых у них выполнено больше 3 достижений
 ```sql
-SELECT (SELECT title FROM steam.games LIMIT 1) AS НАЗВАНИЕ;
+SELECT username, title FROM steam.accounts
+JOIN steam.account_game ag on accounts.account_id = ag.account_id
+JOIN steam.games g on g.game_id = ag.game_id
+WHERE ag.ownership_id = ANY (SELECT DISTINCT ownership_id FROM steam.ownership_achievement oa
+GROUP BY oa.ownership_id
+HAVING COUNT(*) > 3)
 ```
-<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/103131fc-4a23-4c32-aa82-5f6d737d2b0a" />
+<img width="597" height="165" alt="image" src="https://github.com/user-attachments/assets/080251f5-c1dd-4582-9646-5932af14d4db" />
 
-1.2 Хотим узнать название первой игры
+7.3 Хотим узнать пользователей, которые написали хотя бы один положительный отзыв
 ```sql
-SELECT (SELECT title FROM steam.games LIMIT 1) AS НАЗВАНИЕ;
+SELECT username FROM steam.accounts
+WHERE accounts.account_id = ANY (SELECT DISTINCT account_id FROM steam.reviews
+WHERE rating)
 ```
-<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/103131fc-4a23-4c32-aa82-5f6d737d2b0a" />
+<img width="209" height="148" alt="image" src="https://github.com/user-attachments/assets/51b931bf-cf25-4392-a46b-db1f0c1737db" />
+
 
 8 EXIST
 
-1.2 Хотим узнать название первой игры
+8.1 Хотим найти пользователей, у которых есть хотя бы одна платная игра
 ```sql
-SELECT (SELECT title FROM steam.games LIMIT 1) AS НАЗВАНИЕ;
+SELECT username FROM steam.accounts
+WHERE EXISTS (SELECT 1 FROM steam.games
+JOIN steam.account_game ag on games.game_id = ag.game_id
+WHERE price > 0 AND ag.account_id = accounts.account_id)
 ```
-<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/103131fc-4a23-4c32-aa82-5f6d737d2b0a" />
+<img width="215" height="146" alt="image" src="https://github.com/user-attachments/assets/f4ee671d-6705-417a-98a6-4be22df09380" />
 
-1.2 Хотим узнать название первой игры
+8.2 Хотим найти пользователей, которые написали хотя бы одни отрицательный отзыв
 ```sql
-SELECT (SELECT title FROM steam.games LIMIT 1) AS НАЗВАНИЕ;
+SELECT username FROM steam.accounts
+WHERE EXISTS (SELECT 1 FROM steam.reviews
+WHERE NOT rating and reviews.account_id = accounts.account_id)
 ```
-<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/103131fc-4a23-4c32-aa82-5f6d737d2b0a" />
+<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/6e4fabe3-0b69-4dc5-930a-039c4ba019c6" />
 
-1.2 Хотим узнать название первой игры
+8.3 Хотим узнать пользователей, у которых нет работ в мастерской
 ```sql
-SELECT (SELECT title FROM steam.games LIMIT 1) AS НАЗВАНИЕ;
+SELECT username FROM steam.accounts
+WHERE NOT EXISTS (SELECT 1 FROM steam.workshop
+WHERE accounts.account_id = workshop.account_id)
 ```
-<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/103131fc-4a23-4c32-aa82-5f6d737d2b0a" />
+<img width="212" height="115" alt="image" src="https://github.com/user-attachments/assets/55df2d98-c060-456c-bbd5-4d04bb84fe21" />
+
+9 Сравнение по нескольким столбцам
+
+9.1 Хотим узнать пользователей и игры, к которым пользователи написали положительные отзывы
+```sql
+    SELECT username, title FROM steam.accounts
+    JOIN steam.account_game ag on accounts.account_id = ag.account_id
+    JOIN steam.games g on g.game_id = ag.game_id
+    WHERE (accounts.account_id, g.game_id) IN (SELECT account_id, reviews.game_id FROM steam.reviews
+    WHERE rating)
+```
+<img width="584" height="153" alt="image" src="https://github.com/user-attachments/assets/07715d7b-19aa-49de-b89a-3ddb2e97698d" />
+
+9.2 Хотим узнать пользователей и игры, к которым пользователи сделали работу в мастерской
+```sql
+SELECT username, title FROM steam.accounts
+CROSS JOIN steam.games g 
+WHERE (accounts.account_id, g.game_id) IN (SELECT workshop.account_id, workshop.game_id
+FROM steam.workshop)
+```
+<img width="577" height="86" alt="image" src="https://github.com/user-attachments/assets/5686e682-9e26-4040-9638-be6afc375049" />
+
+9.3 Хотим узнать пользователей, которые не оставили отзыв к своим играм
+```sql
+SELECT username, title FROM steam.accounts
+JOIN steam.account_game ag on accounts.account_id = ag.account_id
+JOIN steam.games g on g.game_id = ag.game_id
+WHERE (accounts.account_id, g.game_id) NOT IN (SELECT account_id, reviews.game_id FROM steam.reviews)
+```
+<img width="587" height="233" alt="image" src="https://github.com/user-attachments/assets/a8713b16-5d7d-4944-a20f-6d10ffbcc19d" />
+
+10 Коррелированные подзапросы
+
+10.1 Хотим узнать сколько денег пользователи потратили на игры
+```sql
+SELECT username, (SELECT SUM(price) FROM steam.account_game
+JOIN steam.games g on g.game_id = account_game.game_id
+WHERE accounts.account_id = account_game.account_id)
+FROM steam.accounts
+```
+<img width="404" height="177" alt="image" src="https://github.com/user-attachments/assets/2021face-8179-44df-bc6f-23f1eef9c114" />
+
+10.2 Хотим узнать игры пользователей, которые стоят больше средней цены игр пользователя
+```sql
+SELECT username, g.title, price  FROM steam.account_game
+JOIN steam.games g on g.game_id = account_game.game_id
+JOIN steam.accounts a on a.account_id = account_game.account_id
+WHERE price > (SELECT AVG(price) FROM steam.account_game
+JOIN steam.games g on g.game_id = account_game.game_id
+WHERE account_game.account_id = a.account_id)
+```
+<img width="763" height="146" alt="image" src="https://github.com/user-attachments/assets/eb0bd0e6-8e57-476c-97fb-3dc5e934a890" />
+
+10.3 Хотим узнать пользователей, которые выполнили все достижения в какой-то игре
+```sql
+SELECT username, title FROM steam.account_game
+JOIN steam.games g on g.game_id = account_game.game_id
+JOIN steam.accounts a on a.account_id = account_game.account_id
+JOIN steam.ownership_achievement oa on account_game.ownership_id = oa.ownership_id
+GROUP BY (username, title, g.game_id)
+HAVING COUNT(*) = (SELECT COUNT(*) FROM steam.achievements
+WHERE g.game_id = achievements.game_id)
+```
+<img width="586" height="149" alt="image" src="https://github.com/user-attachments/assets/7c6f408e-716c-4da8-8274-98bae6d013f5" />
+
+
