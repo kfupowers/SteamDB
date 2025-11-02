@@ -74,7 +74,8 @@ SELECT title, price FROM steam.games
 WHERE price = (SELECT MIN(price) FROM steam.games
 WHERE price > 0);
 ```
-<img width="214" height="67" alt="image" src="https://github.com/user-attachments/assets/103131fc-4a23-4c32-aa82-5f6d737d2b0a" />
+<img width="404" height="65" alt="image" src="https://github.com/user-attachments/assets/f773b14d-c363-4b40-a310-83740ff72f9f" />
+
 
 3.3 Хотим узнать игры с ценой больше средней
 ```sql
