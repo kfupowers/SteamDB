@@ -213,4 +213,78 @@ JOIN steam.gamemodes gm on gm.mode_id = gg.gamemode_id
 ```
 <img width="1217" height="288" alt="image" src="https://github.com/user-attachments/assets/1525e9bd-ed48-4537-a236-00ba14647ee4" />
 
+7 Range
+
+7.1 Хотим узнать среднюю цену в окне по жанрам
+```sql
+SELECT g2.name, g.title, g.price, AVG(price) OVER (
+PARTITION BY g2.genre_id
+ORDER BY g.price
+RANGE BETWEEN 200 preceding and current row
+) as avg_game_price_in_mode
+FROM steam.games g
+JOIN steam.game_genre gg on g.game_id = gg.game_id
+JOIN steam.genres g2 on g2.genre_id = gg.genre_id
+```
+<img width="1199" height="520" alt="image" src="https://github.com/user-attachments/assets/93ae6512-e696-4ab3-b0fa-1fc0ccde9db2" />
+
+
+7.2 Хотим узнать среднюю цену в окне
+```sql
+SELECT  g.title, g.price, AVG(price) OVER (
+ORDER BY g.price
+RANGE BETWEEN 200 preceding and current row
+) as avg_game_price_in_mode
+FROM steam.games g
+```
+<img width="930" height="178" alt="image" src="https://github.com/user-attachments/assets/0a9e9193-6014-42e9-83fb-f1091647a86d" />
+
+8 Rows
+
+8.1 Хотим узнать среднюю цену в окне по жанрам
+```sql
+SELECT g2.name, g.title, g.price, AVG(price) OVER (
+PARTITION BY g2.genre_id
+ORDER BY g.price
+ROWS BETWEEN 1 preceding and current row
+) as avg_game_price_in_mode
+FROM steam.games g
+JOIN steam.game_genre gg on g.game_id = gg.game_id
+JOIN steam.genres g2 on g2.genre_id = gg.genre_id
+```
+<img width="1196" height="526" alt="image" src="https://github.com/user-attachments/assets/60f0a54d-8edb-45c8-8da3-95d584c5ea91" />
+
+8.2 Хотим узнать среднюю цену в окне 
+```sql
+SELECT  g.title, g.price, AVG(price) OVER (
+ORDER BY g.price
+ROWS BETWEEN 2 preceding and current row
+) as avg_game_price_in_mode
+FROM steam.games g
+```
+<img width="932" height="174" alt="image" src="https://github.com/user-attachments/assets/4dbba24c-abda-400e-9bc0-bf3d605c42a3" />
+
+9 Ранжирующие(Пользователи по количеству достижений)
+WITH qt as (SELECT account_id, count(*) as ct
+FROM steam.account_game ag
+JOIN steam.ownership_achievement oa on ag.ownership_id = oa.ownership_id
+GROUP BY account_id)
+SELECT username, ct,
+ROW_NUMBER() over (ORDER BY ct) as row_number,
+RANK() over (ORDER BY ct) as rank,
+DENSE_RANK() over (ORDER BY ct) as dense_rank
+FROM qt JOIN steam.accounts a ON qt.account_id = a.account_id
+<img width="1049" height="172" alt="image" src="https://github.com/user-attachments/assets/d5c9c739-1d5e-464a-8a68-c08afc699f10" />
+
+10 Оконные функции смещени
+
+```sql
+SELECT  g.title, g.price,
+LAG(price) over (ORDER BY g.price) as lag,
+LEAD(price) over (ORDER BY g.price) as lead,
+FIRST_VALUE(price) over (ORDER BY g.price RANGE BETWEEN 200 preceding AND CURRENT ROW) as first_value,
+LAST_VALUE(price) over (ORDER BY g.price RANGE BETWEEN 400 preceding AND 100 PRECEDING) as last_value
+FROM steam.games g
+```
+<img width="1373" height="181" alt="image" src="https://github.com/user-attachments/assets/5e7075de-c5af-4e99-8ddf-bbd489b1c9b6" />
 
