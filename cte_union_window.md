@@ -9,7 +9,8 @@ JOIN steam.wishlists w on games.game_id = w.game_id
 JOIN steam.accounts a on a.account_id = w.account_id
 WHERE price = (SELECT max_price FROM Max_price);
 ```
-<img width="611" height="89" alt="image" src="https://github.com/user-attachments/assets/e9444f19-f5de-43a8-a652-2da17cdb7acc" />
+<img width="619" height="65" alt="image" src="https://github.com/user-attachments/assets/b32b0e67-67ca-44de-824d-1a23a213b8d8" />
+
 
 
 1.2 Хотим узнать игры с ценой выше средней
@@ -19,7 +20,8 @@ WHERE price > 0)
 SELECT title, price, (SELECT avg FROM avg_price) FROM steam.games
 WHERE price >= (SELECT avg FROM avg_price);
 ```
-<img width="657" height="60" alt="image" src="https://github.com/user-attachments/assets/a7c39cdb-e59e-40a8-99e7-f99524db362d" />
+<img width="611" height="144" alt="image" src="https://github.com/user-attachments/assets/04f65ce9-78d1-4354-9a4b-cae7df63f235" />
+
 
 
 1.3 Хотим узнать пользователей с максимальным количеством достижений
@@ -33,7 +35,7 @@ FROM qt
 JOIN steam.accounts a ON qt.account_id = a.account_id
 WHERE ct = (SELECT Max(ct) FROM qt);
 ```
-<img width="398" height="174" alt="image" src="https://github.com/user-attachments/assets/91af3240-3bcc-4ee8-99e9-3805b6fdc3e4" />
+<img width="403" height="59" alt="image" src="https://github.com/user-attachments/assets/756e55b5-c186-42cf-9130-9c2a98d80c2c" />
 
 1.4 Хотим узнать среднее количество игр на аккаунтах
 ```sql
@@ -43,7 +45,7 @@ GROUP BY account_id)
 SELECT AVG(games_count.gc) as avg_games_count
 FROM games_count;
 ```
-<img width="286" height="65" alt="image" src="https://github.com/user-attachments/assets/54dce743-77a4-4ec7-98ad-9ed719ea7cce" />
+<img width="283" height="59" alt="image" src="https://github.com/user-attachments/assets/60ec099f-69b8-4ede-91ed-47eb10c75158" />
 
 1.5 Хотим узнать аккаунты на которых средняя цена игр больше 100
 ```sql
@@ -56,7 +58,8 @@ SELECT username, avg_games_price
 FROM avg_games_price_by_account
 WHERE avg_games_price > 100;
 ```
-<img width="557" height="145" alt="image" src="https://github.com/user-attachments/assets/ca341f69-4067-4217-9453-100260f84d58" />
+<img width="554" height="290" alt="image" src="https://github.com/user-attachments/assets/2427f978-3944-4db3-8599-048684f1b6ce" />
+
 
 2 Union
 
@@ -66,7 +69,7 @@ SELECT 'Бесплатные игры' s, COUNT(*) FROM steam.games WHERE price 
 UNION
 SELECT 'Платные игры', COUNT(*) FROM steam.games WHERE price > 0
 ```
-<img width="411" height="92" alt="image" src="https://github.com/user-attachments/assets/20f1ca67-f14e-4105-9f72-b4c0079724cb" />
+<img width="407" height="89" alt="image" src="https://github.com/user-attachments/assets/529c5299-3ef6-47a7-9a4b-cdf751fe61c1" />
 
 
 2.2 Хотим узнать игры стоимостью от 300 до 400 и больше 600
@@ -75,7 +78,7 @@ SELECT title, price FROM steam.games WHERE price BETWEEN 300 AND 400
 UNION
 SELECT title, price FROM steam.games WHERE price > 600
 ```
-<img width="548" height="87" alt="image" src="https://github.com/user-attachments/assets/564ee61c-1b3f-440d-8996-79cea6980516" />
+<img width="545" height="203" alt="image" src="https://github.com/user-attachments/assets/78364dbd-c099-4a8e-b7c3-150a1e641d52" />
 
 
 2.3 Хотим узнать пользователей с деньгами и без в кошельках
@@ -84,8 +87,7 @@ SELECT username, 'денег нет' money FROM steam.accounts WHERE wallet_bala
 UNION
 SELECT username, 'деньги есть' FROM steam.accounts WHERE wallet_balance > 0
 ```
-<img width="417" height="178" alt="image" src="https://github.com/user-attachments/assets/b317b838-dceb-4e2b-bed0-7da711a4297f" />
-
+<img width="446" height="322" alt="image" src="https://github.com/user-attachments/assets/b8587c53-e4f9-46e4-8e9c-5fab1a346f93" />
 
 
 3 Intersect
@@ -95,7 +97,8 @@ SELECT username, 'деньги есть' FROM steam.accounts WHERE wallet_balanc
 SELECT title, price FROM steam.games WHERE price > 200
 INTERSECT
 SELECT title, price FROM steam.games WHERE price < 400
-```<img width="546" height="89" alt="image" src="https://github.com/user-attachments/assets/590ee8be-b1d8-4152-b7d4-b6b7ac95130e" />
+```
+<img width="551" height="110" alt="image" src="https://github.com/user-attachments/assets/c85c3d45-f31a-4848-8683-963a9be97c07" />
 
 3.2 Хотим узнать игры Для одного игрока и в жанре Платформер
 ```sql
@@ -109,7 +112,8 @@ JOIN steam.game_gamemode gg2 on games.game_id = gg2.game_id
 JOIN steam.gamemodes g2 on g2.mode_id = gg2.gamemode_id
 WHERE g2.name = 'Для одного игрока';
 ```
-<img width="544" height="87" alt="image" src="https://github.com/user-attachments/assets/5b53f0a7-e945-4677-99d8-c4ef7f93dafc" />
+<img width="546" height="143" alt="image" src="https://github.com/user-attachments/assets/fddc9f92-36dc-484e-a9ad-498b96f6305c" />
+
 
 3.3 Хотим узнать пользователей, которые написали отзыв и сделали работу в мастерской
 ```sql
@@ -117,9 +121,11 @@ SELECT DISTINCT a.username FROM steam.accounts a
 JOIN steam.reviews r on a.account_id = r.account_id
 INTERSECT
 SELECT DISTINCT a.username FROM steam.accounts a
-JOIN steam.workshop w on a.account_id = w.account_id
+JOIN steam.account_game ag on a.account_id = ag.account_id
+JOIN steam.workshop w on ag.ownership_id = w.ownership_id
 ```
-<img width="212" height="90" alt="image" src="https://github.com/user-attachments/assets/b9fd5585-19ba-46fb-ad64-5fc86422c638" />
+<img width="221" height="120" alt="image" src="https://github.com/user-attachments/assets/c5ad9406-2039-4c88-8527-b59e2783b704" />
+
 
 
 4 Except
@@ -136,7 +142,8 @@ JOIN steam.game_genre gg on games.game_id = gg.game_id
 JOIN steam.genres g on g.genre_id = gg.genre_id
 WHERE g.name = 'Платформер';
 ```
-<img width="544" height="56" alt="image" src="https://github.com/user-attachments/assets/a623694f-d18b-4681-b33e-0fba226b1139" />
+<img width="548" height="176" alt="image" src="https://github.com/user-attachments/assets/6a7b9475-77bc-4b94-b9e5-025a72ede748" />
+
 
 
 4.2 Хотим узнать пользователей, которые написали отзыв, но не сделали работу в мастерской
@@ -145,9 +152,11 @@ SELECT DISTINCT a.username FROM steam.accounts a
 JOIN steam.reviews r on a.account_id = r.account_id
 EXCEPT
 SELECT DISTINCT a.username FROM steam.accounts a
-JOIN steam.workshop w on a.account_id = w.account_id
+JOIN steam.account_game ag on a.account_id = ag.account_id
+JOIN steam.workshop w on ag.ownership_id = w.ownership_id
 ```
-<img width="213" height="121" alt="image" src="https://github.com/user-attachments/assets/b96153f0-1c2f-4930-88ed-f92b8dbb1060" />
+<img width="214" height="176" alt="image" src="https://github.com/user-attachments/assets/ef5b2bf9-7166-4e26-9443-120054d04b20" />
+
 
 
 4.3 Хотим узнать платные игры, которые есть в списках желаемого
@@ -158,7 +167,8 @@ JOIN steam.wishlists w on g.game_id = w.game_id
 EXCEPT
 SELECT g.title FROM steam.games g WHERE price = 0;
 ```
-<img width="308" height="106" alt="image" src="https://github.com/user-attachments/assets/2303062d-dc0f-4414-84a3-107c474dea76" />
+<img width="307" height="181" alt="image" src="https://github.com/user-attachments/assets/8f310ed6-a6f1-437d-a521-17dedf593363" />
+
 
 
 5 Partition by
@@ -172,7 +182,8 @@ FROM steam.games g
 JOIN steam.account_game ag on g.game_id = ag.game_id
 JOIN steam.accounts a on a.account_id = ag.account_id
 ```
-<img width="1141" height="350" alt="image" src="https://github.com/user-attachments/assets/d7dea614-53a5-4001-9248-ee47419c45a3" />
+<img width="1138" height="809" alt="image" src="https://github.com/user-attachments/assets/2345620b-0e29-466b-a4de-382f97ec31ce" />
+
 
 
 5.2 Хотим узнать максимальную цену игр по модам
@@ -184,7 +195,8 @@ JOIN steam.accounts a on a.account_id = ag.account_id
   JOIN steam.game_gamemode gg on g.game_id = gg.game_id
   JOIN steam.gamemodes gm on gm.mode_id = gg.gamemode_id
 ```
-<img width="1215" height="293" alt="image" src="https://github.com/user-attachments/assets/90062575-5672-4f60-aa87-e681cad2698b" />
+<img width="1231" height="839" alt="image" src="https://github.com/user-attachments/assets/62f28e1d-1c97-4659-97c6-e0314b76ebb5" />
+
 
 6 Partition by + Order by
 
@@ -198,7 +210,8 @@ FROM steam.games g
 JOIN steam.game_genre gg on g.game_id = gg.game_id
 JOIN steam.genres g2 on g2.genre_id = gg.genre_id
 ```
-<img width="1200" height="520" alt="image" src="https://github.com/user-attachments/assets/ebdb025c-6a0b-460b-8b82-acb774d994e8" />
+<img width="1208" height="877" alt="image" src="https://github.com/user-attachments/assets/e98acbae-4ba8-4370-ba01-392d0ac4f257" />
+
 
   
 6.2 Хотим узнать нарастающую цену игр по модам
@@ -211,7 +224,7 @@ FROM steam.games g
 JOIN steam.game_gamemode gg on g.game_id = gg.game_id
 JOIN steam.gamemodes gm on gm.mode_id = gg.gamemode_id
 ```
-<img width="1217" height="288" alt="image" src="https://github.com/user-attachments/assets/1525e9bd-ed48-4537-a236-00ba14647ee4" />
+<img width="1231" height="841" alt="image" src="https://github.com/user-attachments/assets/6eec4fc7-9ddb-43da-a20e-840fe9adfd60" />
 
 7 Range
 
@@ -226,7 +239,8 @@ FROM steam.games g
 JOIN steam.game_genre gg on g.game_id = gg.game_id
 JOIN steam.genres g2 on g2.genre_id = gg.genre_id
 ```
-<img width="1199" height="520" alt="image" src="https://github.com/user-attachments/assets/93ae6512-e696-4ab3-b0fa-1fc0ccde9db2" />
+<img width="1197" height="874" alt="image" src="https://github.com/user-attachments/assets/aa4e482b-c434-435a-93b4-822ca7a0201f" />
+
 
 
 7.2 Хотим узнать среднюю цену в окне
@@ -237,7 +251,8 @@ RANGE BETWEEN 200 preceding and current row
 ) as avg_game_price_in_mode
 FROM steam.games g
 ```
-<img width="930" height="178" alt="image" src="https://github.com/user-attachments/assets/0a9e9193-6014-42e9-83fb-f1091647a86d" />
+<img width="945" height="380" alt="image" src="https://github.com/user-attachments/assets/4dbf0b20-7704-4f7d-b3a7-ca823a08e565" />
+
 
 8 Rows
 
@@ -252,7 +267,8 @@ FROM steam.games g
 JOIN steam.game_genre gg on g.game_id = gg.game_id
 JOIN steam.genres g2 on g2.genre_id = gg.genre_id
 ```
-<img width="1196" height="526" alt="image" src="https://github.com/user-attachments/assets/60f0a54d-8edb-45c8-8da3-95d584c5ea91" />
+<img width="1198" height="761" alt="image" src="https://github.com/user-attachments/assets/02e4b39f-c913-4012-8d1f-218906a14b2c" />
+
 
 8.2 Хотим узнать среднюю цену в окне 
 ```sql
@@ -262,7 +278,8 @@ ROWS BETWEEN 2 preceding and current row
 ) as avg_game_price_in_mode
 FROM steam.games g
 ```
-<img width="932" height="174" alt="image" src="https://github.com/user-attachments/assets/4dbba24c-abda-400e-9bc0-bf3d605c42a3" />
+<img width="947" height="376" alt="image" src="https://github.com/user-attachments/assets/928d3941-9ade-4afe-a10b-ce159e32392c" />
+
 
 9 Ранжирующие(Пользователи по количеству достижений)
 WITH qt as (SELECT account_id, count(*) as ct
@@ -270,11 +287,12 @@ FROM steam.account_game ag
 JOIN steam.ownership_achievement oa on ag.ownership_id = oa.ownership_id
 GROUP BY account_id)
 SELECT username, ct,
-ROW_NUMBER() over (ORDER BY ct) as row_number,
-RANK() over (ORDER BY ct) as rank,
-DENSE_RANK() over (ORDER BY ct) as dense_rank
+ROW_NUMBER() over (ORDER BY ct DESC) as row_number,
+RANK() over (ORDER BY ct DESC) as rank,
+DENSE_RANK() over (ORDER BY ct DESC) as dense_rank
 FROM qt JOIN steam.accounts a ON qt.account_id = a.account_id
-<img width="1049" height="172" alt="image" src="https://github.com/user-attachments/assets/d5c9c739-1d5e-464a-8a68-c08afc699f10" />
+<img width="1050" height="299" alt="image" src="https://github.com/user-attachments/assets/92c90460-efab-4605-a462-586dda5e4ab4" />
+
 
 10 Оконные функции смещени
 
