@@ -15,6 +15,10 @@ $$;
 
 CALL steam.update_game_price(26,11501);
 ```
+
+<img width="644" height="31" alt="image" src="https://github.com/user-attachments/assets/2ca0ce53-bf32-4cb8-8099-56cb2b3a916d" />
+
+
 1.2 Добавить отзыв или обновить, если есть
 ```sql
 CREATE OR REPLACE PROCEDURE steam.upsert_review(
@@ -43,6 +47,9 @@ $$;
 CALL steam.upsert_review(1,1, true, '.', '2025-11-11');
 ```
 
+<img width="807" height="28" alt="image" src="https://github.com/user-attachments/assets/3af2b184-85d9-4b89-87a1-566840264e05" />
+
+
 1.3 Добавить достижение с проверкой, что у достижения и ownership одна и та же игра
 ```sql
 CREATE OR REPLACE PROCEDURE steam.insert_ownership_achievement(
@@ -65,7 +72,11 @@ BEGIN
     END IF;
 END;
 $$;
+
+CALL steam.insert_ownership_achievement(2,44);
 ```
+
+<img width="520" height="90" alt="image" src="https://github.com/user-attachments/assets/8c351b5b-9781-4269-9216-8c96b7692510" />
 
 1.4 Все процедуры
 ```sql
@@ -93,6 +104,9 @@ $$;
 SELECT steam.sum_spent_on_games_by_user(10);
 ```
 
+<img width="395" height="63" alt="image" src="https://github.com/user-attachments/assets/d7036548-8fb7-4eae-8543-31ac8a93dfe3" />
+
+
 2.2 Сколько отзывов написал пользователь
 ```sql
 CREATE OR REPLACE FUNCTION steam.sum_reviews_by_user(new_user_id INT)
@@ -108,6 +122,8 @@ $$;
 SELECT steam.sum_reviews_by_user(10);
 ```
 
+<img width="324" height="51" alt="image" src="https://github.com/user-attachments/assets/96e5462e-f8d4-431b-9ee0-034b08bbb5f7" />
+
 2.3 Есть ли игра в списке желаемого
 ```sql
 CREATE OR REPLACE FUNCTION steam.is_in_wishlist(new_game_id INT, new_user_id INT)
@@ -122,6 +138,9 @@ $$;
 
 SELECT steam.is_in_wishlist(6,8);
 ```
+
+<img width="272" height="58" alt="image" src="https://github.com/user-attachments/assets/367cf040-f882-4479-ba07-5ffe6e1d6743" />
+
 
 2.4 Вычислить процент положительных отзывов, которые написал пользователь
 ```sql
@@ -150,6 +169,9 @@ $$;
 
 SELECT steam.percent_reviews_by_user(10);
 ```
+
+<img width="368" height="60" alt="image" src="https://github.com/user-attachments/assets/5edbacb4-a022-4463-ad4d-363e4f0dcda8" />
+
 
 2.5 Процент положительных отзывов у игры
 ```sql
@@ -182,6 +204,9 @@ $$;
 SELECT steam.percent_reviews_by_game(1);
 ```
 
+<img width="363" height="66" alt="image" src="https://github.com/user-attachments/assets/3520a0c8-1e0c-4de6-8cc9-ec5912b97a93" />
+
+
 2.6 Получить разработчика игры без join
 ```sql
 CREATE OR REPLACE FUNCTION steam.game_developer_name(new_game_id INT)
@@ -198,7 +223,11 @@ BEGIN
     RETURN (SELECT name FROM developers WHERE developer_id = new_developer_id);
 END;
 $$;
+
+SELECT steam.game_developer_name(1);
 ```
+
+<img width="339" height="64" alt="image" src="https://github.com/user-attachments/assets/bbfb3962-4a8c-4953-99a6-bebff5983b3d" />
 
 2.7 Вычислить отклонение цены игры от средней в стиме
 ```sql
@@ -218,6 +247,9 @@ $$;
 SELECT steam.game_price_deviation(12);
 ```
 
+<img width="336" height="57" alt="image" src="https://github.com/user-attachments/assets/4f349e6a-02e0-43b1-ae5f-5ff4866b2605" />
+
+
 2.8 Все функции
 ```sql
 SELECT routine_name, routine_type
@@ -227,7 +259,7 @@ WHERE routine_type = 'FUNCTION' AND routine_schema = 'steam';
 
 <img width="663" height="323" alt="image" src="https://github.com/user-attachments/assets/172f48b2-47ac-4343-b25e-2837facd4c43" />
 
-3.1 Добавить или обновить пользователя C Exception
+3.1 Добавить или обновить отзыв C Exception
 ```sql
 DO $$
 BEGIN
@@ -243,7 +275,9 @@ EXCEPTION
 END $$ language plpgsql;
 ```
 
-3.2 Добавить или обновить пользователя с IF
+<img width="805" height="32" alt="image" src="https://github.com/user-attachments/assets/190c6434-6735-4352-bea7-16f60f830f09" />
+
+3.2 Добавить или обновить отзыв с IF
 ```sql
 DO $$
 BEGIN
@@ -259,6 +293,9 @@ BEGIN
 END $$ language plpgsql;
 ```
 
+<img width="805" height="32" alt="image" src="https://github.com/user-attachments/assets/21553b68-85e1-4739-b23f-09c10305c38f" />
+
+
 3.3 Пользователь покупает игру
 
 ```sql
@@ -267,19 +304,27 @@ DECLARE
     game_price INTEGER;
     current_balance INTEGER;
 BEGIN
-    SELECT price INTO game_price FROM steam.games WHERE game_id = 3;
-    SELECT wallet_balance INTO current_balance FROM steam.accounts WHERE account_id = 1;
+    SELECT price INTO game_price FROM steam.games WHERE game_id = 5;
+    SELECT wallet_balance INTO current_balance FROM steam.accounts WHERE account_id = 8;
 
     IF current_balance >= game_price THEN
         INSERT INTO steam.account_game (account_id, game_id)
-        VALUES (1, 3);
+        VALUES (8, 5);
 
         UPDATE steam.accounts
         SET wallet_balance = wallet_balance - game_price
-        WHERE account_id = 1;
+        WHERE account_id = 8;
     END IF;
 END $$;
 ```
+
+ДО
+
+<img width="966" height="51" alt="image" src="https://github.com/user-attachments/assets/f66e457d-af67-4827-a55b-94f797098de1" />
+
+ПОСЛЕ
+
+<img width="960" height="30" alt="image" src="https://github.com/user-attachments/assets/1e0d3b34-0e0c-4542-bb9d-639af0c49982" />
 
 4.1 Через сколько итераций первым в списке будет нужный нам пользователь, если сортировать рандомно
 ```sql
@@ -304,6 +349,9 @@ $$;
 
 SELECT steam.get_user_by_id_with_rand(1) as iterations;
 ```
+
+<img width="228" height="63" alt="image" src="https://github.com/user-attachments/assets/8105dfff-fce3-4c3c-8f25-8c6b08f05b97" />
+
 
 4.2 Сколько пользователей дружат друг с другом через менее, чем x человек
 ```sql
@@ -336,6 +384,9 @@ $$;
 SELECT steam.get_users_by_handshakes(2,2) as how_many_users;
 ```
 
+<img width="275" height="63" alt="image" src="https://github.com/user-attachments/assets/c03c6400-b6e9-491a-9505-5f231f7a6424" />
+
+
 4.3 Получить категорию игры по проценту положительных отзывов
 ```sql
 CREATE OR REPLACE FUNCTION steam.get_game_category(new_game_id INT)
@@ -360,4 +411,8 @@ END;
 $$;
 
 SELECT steam.get_game_category(2);
+```
+
+<img width="303" height="63" alt="image" src="https://github.com/user-attachments/assets/26590de4-3441-4ab6-8010-73accbeb3769" />
+
 ```
