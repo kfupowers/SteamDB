@@ -1,3 +1,4 @@
+1.1 Триггер проверяющий, что баланс >=0
 ```sql
 CREATE OR REPLACE FUNCTION steam.positive_wallet_balance()
 RETURNS TRIGGER AS $$
@@ -20,7 +21,7 @@ WHERE account_id = 1;
 
 <img width="606" height="56" alt="image" src="https://github.com/user-attachments/assets/72e43f29-9480-465e-a956-039fadeab2f2" />
 
-
+1.2 Триггер проверяющий, что achievement и ownership относятся к одной игре.
 ```sql
 CREATE OR REPLACE FUNCTION steam.ownership_game_achievement_game()
 RETURNS TRIGGER AS $$
@@ -48,7 +49,7 @@ INSERT INTO steam.ownership_achievement(ownership_id, achievement_id) VALUES (2,
 
 <img width="1048" height="62" alt="image" src="https://github.com/user-attachments/assets/1e78a3c6-4908-48ab-9c06-b5e0bfc1b301" />
 
-
+1.3 Триггер, ставящий последнюю дату изменения пароля
 ```sql
 ALTER TABLE steam.accounts
 ADD password_updated_at TIMESTAMP;
@@ -73,7 +74,7 @@ WHERE account_id = 1;
 
 <img width="1244" height="32" alt="image" src="https://github.com/user-attachments/assets/2d5d12dd-8e7e-4480-add5-8101cafb21e5" />
 
-
+1.4 Триггер логирующий изменение баланса кошельков
 ```sql
 CREATE TABLE steam.balance_log (
     account_id INT,
@@ -106,7 +107,7 @@ WHERE account_id = 2;
 
 <img width="937" height="64" alt="image" src="https://github.com/user-attachments/assets/8043eef1-e53e-4764-ab7f-e529146eabae" />
 
-
+1.5 При обновлении отзыва дата меняется на текущую
 ```sql
 CREATE OR REPLACE FUNCTION steam.update_review_timestamp()
 RETURNS TRIGGER AS $$
@@ -125,6 +126,8 @@ CREATE TRIGGER review_update_trigger
     EXECUTE FUNCTION steam.update_review_timestamp();
 ```
 
+
+1.6 При испольнении любого запроса над таблицей accounts, в таблицу добавляется запись current_user, NOW(), tg_op
 ```sql
 
 CREATE TABLE steam.query_history (
@@ -153,7 +156,7 @@ WHERE account_id = 2;
 
 <img width="863" height="235" alt="image" src="https://github.com/user-attachments/assets/6a5634df-5533-4e46-8677-07d716c11b53" />
 
-
+1.7 При удалении аккаунта, есть 30 дней на его восстановление
 ```sql
 CREATE TABLE steam.deleting_account (
     account_id INT,
@@ -194,6 +197,7 @@ DELETE FROM steam.accounts WHERE account_id = 100;
 
 <img width="539" height="61" alt="image" src="https://github.com/user-attachments/assets/01ef3531-cf4c-4f6d-a870-b9444a0361ed" />
 
+1.8 Все триггеры
 ```sql
 SELECT *
 FROM information_schema.triggers;
@@ -201,7 +205,7 @@ FROM information_schema.triggers;
 
 <img width="1793" height="386" alt="image" src="https://github.com/user-attachments/assets/09bfe099-0572-41b3-b7de-98d6caa0a7db" />
 
-
+2.1 Крон удаляет старые логи
 ```sql
 SELECT cron.schedule(
     'cleanup_old_logs',
@@ -210,6 +214,8 @@ SELECT cron.schedule(
 );
 ```
 
+
+2.2 
 ```sql
 
 CREATE TABLE steam.game_stats (
@@ -252,6 +258,7 @@ SELECT cron.schedule(
 );
 ```
 
+2.3 Крон удаляющий пользователей, у которых с запроса на удаление аккаунта прошло 30 дней
 ```sql
 SELECT cron.schedule(
     'delete_accounts',
@@ -262,6 +269,7 @@ SELECT cron.schedule(
 );
 ```
 
+2.4 Все кроны
 ```sql
 SELECT * FROM cron.job;
 ```
