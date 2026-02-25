@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:17.5
+    environment:
+      POSTGRES_DB: "index_db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "teamwork.tf"
+    container_name: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db/roles:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/postgresql/data
+
+  flyway:
+    image: flyway/flyway:12.0.1
+    command: -url=jdbc:postgresql://postgres:5432/index_db -user=postgres -password=teamwork.tf migrate
+    volumes:
+      - ./db/migrations:/flyway/sql
+    depends_on:
+      - postgres
+    restart: on-failure
+
+volumes:
+  db-data:

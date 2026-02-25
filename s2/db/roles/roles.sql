@@ -1,3 +1,4 @@
+
 CREATE ROLE app LOGIN PASSWORD 'app_pass';
 
 CREATE ROLE readonly LOGIN PASSWORD 'readonly_pass';
