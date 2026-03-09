@@ -1,0 +1,56 @@
+select_stat:
+  query: |
+    SELECT
+      queryid,
+      mean_exec_time,
+      calls
+    FROM pg_stat_statements
+    WHERE query like 'SELECT%';
+  metrics:
+    - queryid:
+        usage: "LABEL"
+        description: "Query ID"
+    - mean_exec_time:
+        usage: "GAUGE"
+        description: "mean exec time"
+    - calls:
+        usage: "COUNTER"
+        description: "Number of calls"
+insert_stat:
+  query: |
+    SELECT
+      queryid,
+      mean_exec_time,
+      calls
+    FROM pg_stat_statements
+    WHERE query like 'INSERT%';
+  metrics:
+    - queryid:
+        usage: "LABEL"
+        description: "Query ID"
+    - mean_exec_time:
+        usage: "GAUGE"
+        description: "mean exec time"
+    - calls:
+        usage: "COUNTER"
+        description: "Number of calls"
+
+
+delete_stat:
+  query: |
+    SELECT
+      queryid,
+      mean_exec_time,
+      calls
+    FROM pg_stat_statements
+    WHERE query like 'DELETE%';
+  metrics:
+    - queryid:
+        usage: "LABEL"
+        description: "Query ID"
+    - mean_exec_time:
+        usage: "GAUGE"
+        description: "mean exec time"
+    - calls:
+        usage: "COUNTER"
+        description: "Number of calls"
