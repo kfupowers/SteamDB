@@ -72,22 +72,22 @@ DROP INDEX steam.games_price_index_hash;
 
 
 
-EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price IN (2, 3);
+EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price IN (2, 3, 5);
 
 ![img_12.png](img_12.png)
 
-EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price IN (2, 3);
+EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price IN (2, 3, 5);
 
 ![img_13.png](img_13.png)
 
 
 CREATE INDEX games_price_index ON steam.games (price);
 
-EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price IN (2, 3);
+EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price IN (2, 3, 5);
 
 ![img_14.png](img_14.png)
 
-EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price IN (2, 3);
+EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price IN (2, 3, 5);
 
 ![img_15.png](img_15.png)
 
@@ -97,11 +97,11 @@ DROP INDEX steam.games_price_index;
 
 CREATE INDEX games_price_index_hash ON steam.games USING hash (price);
 
-EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price IN (2, 3);
+EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price IN (2, 3, 5);
 
 ![img_16.png](img_16.png)
 
-EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price IN (2, 3);
+EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price IN (2, 3, 5);
 
 ![img_17.png](img_17.png)
 
@@ -109,23 +109,22 @@ DROP INDEX steam.games_price_index_hash;
 
 
 
-EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price BETWEEN 100000 AND 100010;
+EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price BETWEEN 3000 AND 4000;
 
 ![img_18.png](img_18.png)
 
-EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price BETWEEN 100000 AND 100010;
+EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price BETWEEN 3000 AND 4000;
 
 ![img_19.png](img_19.png)
 
 
-
 CREATE INDEX games_price_index ON steam.games (price);
 
-EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price BETWEEN 100000 AND 100010;
+EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price BETWEEN 3000 AND 4000;
 
 ![img_20.png](img_20.png)
 
-EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price BETWEEN 100000 AND 100010;
+EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price BETWEEN 3000 AND 4000;
 
 ![img_21.png](img_21.png)
 
@@ -135,11 +134,11 @@ DROP INDEX steam.games_price_index;
 
 CREATE INDEX games_price_index_hash ON steam.games USING hash(price);
 
-EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price BETWEEN 100000 AND 100010;
+EXPLAIN ANALYSE SELECT * FROM steam.games WHERE games.price BETWEEN 3000 AND 4000;
 
 ![img_22.png](img_22.png)
 
-EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price BETWEEN 100000 AND 100010;
+EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.games WHERE games.price BETWEEN 3000 AND 4000;
 
 ![img_23.png](img_23.png)
 
@@ -159,11 +158,11 @@ CREATE INDEX reviews_rating_index ON steam.reviews (rating);
 
 EXPLAIN ANALYSE SELECT * FROM steam.reviews WHERE reviews.rating <> true;
 
-![img_26.png](img_26.png)
+![img_27.png](img_27.png)
 
 EXPLAIN (ANALYSE, BUFFERS)  SELECT * FROM steam.reviews WHERE reviews.rating <> true;
 
-![img_27.png](img_27.png)
+![img_26.png](img_26.png)
 
 DROP INDEX steam.reviews_rating_index;
 
