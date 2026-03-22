@@ -54,3 +54,6 @@ delete_stat:
     - calls:
         usage: "COUNTER"
         description: "Number of calls"
+replay_lag:
+  query: |
+    SELECT application_name, EXTRACT(epoch FROM replay_lag) AS lag_seconds FROM pg_stat_replication;

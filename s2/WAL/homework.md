@@ -20,14 +20,14 @@ BEGIN;
 INSERT INTO steam.developers(name) VALUES ('new_developers_1');
 commit;
 
-![img_3.png](img_3.png)
+![img_7.png](img_7.png)
 
 INSERT INTO steam.accounts (username, email, password, wallet_balance) SELECT
 'user' || gs,
 LEFT(md5(random()::varchar), 10) || '@gmail.com',
 'pass' || LEFT(md5(random()::varchar), 15),
 (random()*5000)::int
-FROM generate_series(300000, 550000) as gs;
+FROM generate_series(300000, 5500000) as gs;
 
 ![img_2.png](img_2.png)
 

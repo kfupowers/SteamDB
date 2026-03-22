@@ -1,57 +1,136 @@
-services:
-  postgres:
-    image: postgres:17.5
-    environment:
-      POSTGRES_DB: "steamDB"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "teamwork.tf"
-    container_name: postgres
-    ports:
-      - "5433:5432"
-    command: >
-      postgres
-      -c shared_preload_libraries=pg_stat_statements
-      -c pg_stat_statements.track=all
-    volumes:
-      - ./db/roles:/docker-entrypoint-initdb.d
-      - db-data:/var/lib/postgresql/data
+  services:
+    postgres:
+      image: postgres:17.5
+      environment:
+        POSTGRES_DB: "steamDB"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "teamwork.tf"
+      container_name: postgres
+      ports:
+        - "5433:5432"
+      command: >
+        postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c pg_stat_statements.track=all
+      volumes:
+        - ./db/roles:/docker-entrypoint-initdb.d
+        - db-data:/var/lib/postgresql/data
+      networks:
+        - default
 
-  flyway:
-    image: flyway/flyway:12.0.1
-    command: -url=jdbc:postgresql://postgres:5432/steamDB -user=postgres -password=teamwork.tf migrate
-    volumes:
-      - ./db/migrations:/flyway/sql
-    depends_on:
-      - postgres
-    restart: on-failure
+    replica-2:
+      image: postgres:17.5
+      environment:
+        POSTGRES_DB: "steamDB"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "teamwork.tf"
+      container_name: replica2
+      ports:
+        - "5435:5432"
+      command: >
+        postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c pg_stat_statements.track=all
+      volumes:
+        - db-data-2:/var/lib/postgresql/data
+      networks:
+        - default
 
-  postgres_exporter:
-    image: prometheuscommunity/postgres-exporter
-    environment:
-      DATA_SOURCE_NAME: "postgresql://postgres:teamwork.tf@postgres:5432/steamDB?sslmode=disable"
-      PG_EXPORTER_EXTEND_QUERY_PATH: "/queries.yaml"
-    volumes:
-      - ./queries.yaml:/queries.yaml
-    command: --log.level=debug
-    ports:
-      - "9187:9187"
-    depends_on:
-      - postgres
+    replica-1:
+      image: postgres:17.5
+      environment:
+        POSTGRES_DB: "steamDB"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "teamwork.tf"
+      container_name: replica1
+      ports:
+        - "5434:5432"
+      command: >
+        postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c pg_stat_statements.track=all
+      volumes:
+        - db-data-1:/var/lib/postgresql/data
+      networks:
+        - default
 
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    depends_on:
-      - postgres_exporter
+    logical-2:
+      image: postgres:17.5
+      environment:
+        POSTGRES_DB: "steamDB"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "teamwork.tf"
+      container_name: logical2
+      ports:
+        - "5437:5432"
+      command: >
+        postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c pg_stat_statements.track=all
+      volumes:
+        - db-data-l2:/var/lib/postgresql/data
+      networks:
+        - default
 
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    depends_on:
-      - prometheus
-volumes:
-  db-data:
+    logical-1:
+      image: postgres:17.5
+      environment:
+        POSTGRES_DB: "steamDB"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "teamwork.tf"
+      container_name: logical1
+      ports:
+        - "5436:5432"
+      command: >
+        postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c pg_stat_statements.track=all
+        -c wal_level=logical
+      volumes:
+        - db-data-l1:/var/lib/postgresql/data
+      networks:
+        - default
+
+    flyway:
+      image: flyway/flyway:12.0.1
+      command: -url=jdbc:postgresql://postgres:5432/steamDB -user=postgres -password=teamwork.tf migrate
+      volumes:
+        - ./db/migrations:/flyway/sql
+      depends_on:
+        - postgres
+      restart: on-failure
+
+    postgres_exporter:
+      image: prometheuscommunity/postgres-exporter
+      environment:
+        DATA_SOURCE_NAME: "postgresql://postgres:teamwork.tf@postgres:5432/steamDB?sslmode=disable"
+        PG_EXPORTER_EXTEND_QUERY_PATH: "/queries.yaml"
+      volumes:
+        - ./queries.yaml:/queries.yaml
+      command: --log.level=debug
+      ports:
+        - "9187:9187"
+      depends_on:
+        - postgres
+
+    prometheus:
+      image: prom/prometheus
+      ports:
+        - "9090:9090"
+      volumes:
+        - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      depends_on:
+        - postgres_exporter
+
+    grafana:
+      image: grafana/grafana
+      ports:
+        - "3000:3000"
+      depends_on:
+        - prometheus
+  volumes:
+    db-data:
+    db-data-1:
+    db-data-2:
+    db-data-l2:
+    db-data-l1:
