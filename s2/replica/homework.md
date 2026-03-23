@@ -1,7 +1,7 @@
 Архитектура
 
-![Архитектура репликации.png](%C0%F0%F5%E8%F2%E5%EA%F2%F3%F0%E0%20%F0%E5%EF%EB%E8%EA%E0%F6%E8%E8.png)
 
+![Replica_architecture.png](Replica_architecture.png)
 
 Вставка на мастере
 ```sql
