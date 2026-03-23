@@ -1,3 +1,7 @@
+Архитектура
+![Архитектура репликации.png](Архитектура репликации.png)
+
+
 Вставка на мастере
 ```sql
 INSERT INTO steam.genres(name) VALUES ('REPLICA');
