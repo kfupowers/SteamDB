@@ -91,14 +91,76 @@
       networks:
         - default
 
-    flyway:
+    router:
+      image: postgres:17.5
+      environment:
+        POSTGRES_DB: "router"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "teamwork.tf"
+      container_name: router
+      ports:
+        - "5440:5432"
+      command: >
+        postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c pg_stat_statements.track=all
+      volumes:
+        - ./db/roles:/docker-entrypoint-initdb.d
+        - db-data-r:/var/lib/postgresql/data
+      networks:
+        - default
+
+    shard-1:
+      image: postgres:17.5
+      environment:
+        POSTGRES_DB: "shard1"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "teamwork.tf"
+      container_name: shard1
+      ports:
+        - "5438:5432"
+      command: >
+        postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c pg_stat_statements.track=all
+      volumes:
+        - db-data-sh1:/var/lib/postgresql/data
+      networks:
+        - default
+
+    shard-2:
+      image: postgres:17.5
+      environment:
+        POSTGRES_DB: "shard2"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "teamwork.tf"
+      container_name: shard2
+      ports:
+        - "5439:5432"
+      command: >
+        postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c pg_stat_statements.track=all
+      volumes:
+        - db-data-sh2:/var/lib/postgresql/data
+      networks:
+        - default
+
+    flyway-main:
       image: flyway/flyway:12.0.1
       command: -url=jdbc:postgresql://postgres:5432/steamDB -user=postgres -password=teamwork.tf migrate
       volumes:
         - ./db/migrations:/flyway/sql
       depends_on:
         - postgres
-      restart: on-failure
+
+    flyway-router:
+      image: flyway/flyway:12.0.1
+      command: -url=jdbc:postgresql://router:5432/router -user=postgres -password=teamwork.tf migrate
+      volumes:
+        - ./db/migrations:/flyway/sql
+      depends_on:
+        - router
 
     postgres_exporter:
       image: prometheuscommunity/postgres-exporter
@@ -134,3 +196,6 @@
     db-data-2:
     db-data-l2:
     db-data-l1:
+    db-data-r:
+    db-data-sh1:
+    db-data-sh2:
