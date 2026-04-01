@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  postgres-kr:
+    image: postgres:17.5
+    environment:
+      POSTGRES_DB: "DB"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "teamwork.tf"
+    container_name: postgres-kr
+    ports:
+      - "5433:5432"
+    command: >
+      postgres
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.track=all
+    volumes:
+      - ./db/roles:/docker-entrypoint-initdb.d
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - default
+
+  flyway-kr:
+    image: flyway/flyway:12.0.1
+    command: -url=jdbc:postgresql://postgres-kr:5432/DB -user=postgres -password=teamwork.tf migrate
+    volumes:
+      - ./db/migrations:/flyway/sql
+    depends_on:
+      - postgres-kr
+
+volumes:
+  pg_data:
