@@ -1,0 +1,12 @@
+services:
+  redis:
+    image: redis
+    container_name: re
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  redis-data:
