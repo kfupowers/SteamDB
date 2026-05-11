@@ -16,6 +16,7 @@ EXPLAIN(ANALYSE, BUFFERS) SELECT * FROM steam.games_partition WHERE game_id < 30
 
 ![img.png](img.png)
 
+
 ```sql
 CREATE TABLE steam.games_partition_hash (LIKE steam.games INCLUDING DEFAULTS) PARTITION BY HASH (game_id);
 
