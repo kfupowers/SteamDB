@@ -25,6 +25,11 @@ CREATE INDEX IF NOT EXISTS idx_tasks_lag
 ON steam.tasks (created_at)
 WHERE status = 'ready';
 ```
+![img_1.png](img_1.png)
+
+Выполняется примерно 15 задач в секунду.
+
+
 
 2 Вычисление лага
 
@@ -39,12 +44,47 @@ ORDER BY created_at ASC
 LIMIT 1;
 ```
 
-3 Autovacuum
+![img.png](img.png)
+
+
+3 Autovacuum(Увеличил скорость создания задач до 500 и скорость завершения задач до 200 задач двумя consumer)
 ```sql
-ALTER TABLE steam.tasks SET (
-autovacuum_vacuum_scale_factor = 0.0,
-autovacuum_vacuum_threshold = 1000,
-autovacuum_analyze_scale_factor = 0.0,
-autovacuum_analyze_threshold = 1000
-);
+VACUUM ANALYSE 
 ```
+ДО
+
+![img_2.png](img_2.png)
+
+
+ПОСЛЕ
+
+![img_3.png](img_3.png)
+
+```sql
+WITH co AS (
+    SELECT COUNT(*) AS total
+    FROM steam.tasks
+    WHERE priority = 100
+)
+SELECT COUNT(*) * 1.0 / co.total as percent_completed
+FROM steam.tasks, co
+WHERE priority = 100 AND status = 'completed'
+GROUP BY co.total;
+```
+
+![img_4.png](img_4.png)
+
+
+```sql
+WITH co AS (
+    SELECT COUNT(*) AS total
+    FROM steam.tasks
+    WHERE priority = 0
+)
+SELECT COUNT(*) * 1.0 / co.total
+FROM steam.tasks, co
+WHERE priority = 0 AND status = 'completed'
+GROUP BY co.total;
+```
+
+![img_5.png](img_5.png)

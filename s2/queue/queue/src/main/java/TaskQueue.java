@@ -1,3 +1,5 @@
+import org.postgresql.PGConnection;
+
 import java.sql.*;
 import java.time.Instant;
 import java.util.Random;
@@ -23,7 +25,7 @@ public class TaskQueue {
         executor.submit(new Consumer("worker-1"));
         executor.submit(new Consumer("worker-2"));
 
-        Thread.sleep(60_000);
+        Thread.sleep(300000);
         executor.shutdownNow();
     }
 
@@ -168,7 +170,7 @@ public class TaskQueue {
             long start = System.currentTimeMillis();
 
             try {
-                Thread.sleep(RAND.nextInt(250) + 50);
+                Thread.sleep(RAND.nextInt(10) + 5);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 markTaskCompleted(conn, task.id, false, "Interrupted");
