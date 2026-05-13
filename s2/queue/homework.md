@@ -20,10 +20,6 @@ completed_at    TIMESTAMPTZ   NULL
 CREATE INDEX IF NOT EXISTS idx_tasks_fetch
 ON steam.tasks (priority DESC, scheduled_at ASC)
 WHERE status = 'ready';
-
-CREATE INDEX IF NOT EXISTS idx_tasks_lag
-ON steam.tasks (created_at)
-WHERE status = 'ready';
 ```
 ![img_1.png](img_1.png)
 

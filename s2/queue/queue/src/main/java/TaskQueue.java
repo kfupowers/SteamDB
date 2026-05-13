@@ -42,10 +42,8 @@ public class TaskQueue {
 
                     try {
                         PreparedStatement logStmt = conn.prepareStatement(
-                                "INSERT INTO steam.query_history (account_name, query_time, operation) VALUES (?, NOW(), 'task_insert')"
+                                "INSERT INTO steam.games(developer_id, title, description, release_date, price) VALUES (1, 'test', 'test', 11-11-2025, 100)"
                         );
-                        logStmt.setString(1, DB_USER);
-                        logStmt.executeUpdate();
 
                         PreparedStatement taskStmt = conn.prepareStatement(
                                 "INSERT INTO steam.tasks (task_type, payload, priority) VALUES (?, ?::jsonb, ?)"
@@ -61,7 +59,6 @@ public class TaskQueue {
                             notifyStmt.execute("NOTIFY " + NOTIFY_CHANNEL);
                         }
 
-                        System.out.printf("[PRODUCER] Inserted %s task (priority=%d)%n", taskType, priority);
                     } catch (SQLException e) {
                         conn.rollback();
                         System.err.println("[PRODUCER] Error: " + e.getMessage());
@@ -135,7 +132,7 @@ public class TaskQueue {
                                 "  AND scheduled_at <= NOW() " +
                                 "ORDER BY priority DESC, scheduled_at ASC " +
                                 "LIMIT 1 " +
-                                "FOR UPDATE SKIP LOCKED"
+                                "FOR UPDATE"
                 );
                 ResultSet rs = selectStmt.executeQuery();
                 if (rs.next()) {
@@ -166,7 +163,6 @@ public class TaskQueue {
         }
 
         private void processTask(Connection conn, Task task) throws SQLException {
-            System.out.printf("[%s] Picked task #%d (type=%s, priority=%d)%n", name, task.id, task.type, task.priority);
             long start = System.currentTimeMillis();
 
             try {
@@ -197,9 +193,6 @@ public class TaskQueue {
                     retryStmt.setString(2, errorMsg);
                     retryStmt.setLong(3, task.id);
                     retryStmt.executeUpdate();
-                    System.out.printf("[%s] Task #%d failed, scheduled retry #%d%n", name, task.id, task.attempts + 1);
-                } else {
-                    System.out.printf("[%s] Task #%d permanently failed after %d attempts%n", name, task.id, task.attempts);
                 }
             }
         }
